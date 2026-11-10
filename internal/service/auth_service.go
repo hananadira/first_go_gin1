@@ -25,11 +25,13 @@ func NewAuthService(users *repository.UserRepository, jwtSecret string) *AuthSer
 }
 
 func (s *AuthService) Register(ctx context.Context, req dto.RegisterRequest) (*model.User, error) {
+	//bcrypt.GenerateFromPassword mengubah password menjadi hash satu arah
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
 
+	//(TrimSpace, ToLower) agar Hanan@x.com dan hanan@x.com tidak jadi dua akun
 	user := &model.User{
 		Name:         strings.TrimSpace(req.Name),
 		Email:        strings.ToLower(strings.TrimSpace(req.Email)),

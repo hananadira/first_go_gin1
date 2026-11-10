@@ -19,6 +19,8 @@ type UserRepository struct {
 	db *pgxpool.Pool
 }
 
+
+// NewUserRepository adalah construktor. go tidak punya constructor bawaan jadi polanya fungsi berawalan New
 func NewUserRepository(db *pgxpool.Pool) *UserRepository {
 	return &UserRepository{db: db}
 }
@@ -29,6 +31,7 @@ func (r *UserRepository) Create(ctx context.Context, u *model.User) error {
 			RETURNING id, created_at`
 	
 	err := r.db.QueryRow(ctx, query, u.Name, u.Email, u.PasswordHash).
+	//Scan(&u.ID, ...) memasukan hasil nya ke stuct, fungsi & memberi alamat variabel agar bisa diisi 
 		Scan(&u.ID, &u.CreatedAt)
 	if err != nil {
 		var pgErr *pgconn.PgError
